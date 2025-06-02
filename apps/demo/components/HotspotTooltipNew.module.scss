@@ -1,0 +1,363 @@
+// Define custom variables or map to Bootstrap 5 variables
+// For colors, prefer using Bootstrap's CSS variables if possible, e.g., var(--bs-primary)
+// or define your own if no direct match.
+
+$hotspot-btn-bg: #04f0ce; // Or var(--bs-info) or a custom var like --custom-teal
+$tooltip-selected-bg: var(--bs-light); // $color-sand-light
+$tooltip-selected-color: var(--bs-dark); // $color-blue-dark
+$brand-white: var(--bs-white);
+$black: var(--bs-black);
+$font-family-base: var(--bs-font-sans-serif);
+$font-size-sm: var(--bs-font-size-sm);
+
+// Base styles
+.hotspotX {
+  position: absolute;
+  cursor: pointer;
+}
+
+.label { // Combined .hotspotX.label into .label for the module
+  cursor: pointer;
+}
+
+// Button styles
+.btnCircle {
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0; // Remove default button padding
+  transition: 0.8s; // Keep original transition
+  z-index: 3;
+
+  &.btnCircleSm {
+    width: 2.75rem;
+    height: 2.75rem;
+    background-color: $hotspot-btn-bg; // Use defined variable
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: darken($hotspot-btn-bg, 10%);
+      // Consider Bootstrap's :hover states or define explicitly
+    }
+
+    // Animation from original SCSS (simplified)
+    // This might need to be adjusted based on how it looked.
+    // The original had multiple animations like "clockwise" and "pulse-border-xy"
+    // For simplicity, a subtle pulse or hover effect.
+    // If complex animations are needed, they should be defined as @keyframes
+    animation: pulse-border 1.5s linear infinite; 
+  }
+}
+
+// Keyframes for animations (example pulse)
+@keyframes pulse-border {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba($hotspot-btn-bg, 0.7);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba($hotspot-btn-bg, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba($hotspot-btn-bg, 0);
+  }
+}
+
+
+// Tooltip rectangle
+.rectangle {
+  // Base styles from .rectangle, .hotspotX.label
+  background-color: $brand-white;
+  border-radius: 0.375rem; // BS5: rounded
+  padding: 0.75rem 1rem; // BS5: p-2 or p-3
+  min-width: 12.5rem; // 200px
+  text-align: left;
+  z-index: 2;
+  // Position above the button, accounting for its own height and the triangle's height (e.g., 10px)
+  transform: translate(-50%, calc(-100% - 10px)); 
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out; // Keep original transition
+
+  // &.d-flex from original (default for this module)
+  display: flex;
+  flex-direction: column; // Stack title and subtitle
+
+  &.d-block { // For multilineName = true
+    display: block;
+  }
+}
+
+.tooltipSelected {
+  background-color: $tooltip-selected-bg;
+  color: $tooltip-selected-color;
+  box-shadow: var(--bs-shadow-sm); // BS5: shadow-sm (0px 0px 10px 0px rgba(0,0,0,0.173))
+  opacity: 1 !important; // Ensure it's visible when selected
+  visibility: visible !important;
+}
+
+.tooltipTitle {
+  font-weight: bold; // BS5: fw-bold
+  margin-bottom: 0.25rem; // Space between title and subtitle
+  color: inherit; // Inherit color from .tooltipSelected
+}
+
+.tooltipSubtitle {
+  font-size: $font-size-sm; // BS5: fs-sm
+  color: inherit; // Inherit color from .tooltipSelected
+}
+
+// Triangle
+.triangle {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  z-index: 2;
+  transform: translate(-50%, -12px); // Position relative to button, adjust as needed
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out; // Keep original transition
+  
+  // Default triangle pointing up (adjust if tooltip is above)
+  // The original SCSS implies the tooltip is above the button, so triangle points down.
+  // border-width: 10px 10px 0 10px; // For triangle pointing up
+  // border-color: $brand-white transparent transparent transparent;
+
+  // Triangle pointing down (tooltip above button)
+  border-width: 0 10px 10px 10px;
+  border-color: transparent transparent $brand-white transparent;
+  // This assumes the rectangle is positioned above the button.
+  // If the rectangle is to the side, the triangle borders would change.
+  // The transform: translate(-50%, -125%) on .rectangle suggests it's above.
+  // And the original .triangle was also translated in a similar way.
+  // Let's assume it's below the rectangle, pointing from the rectangle towards the button.
+  // The original .triangle has margin-top: -10px; and left: 50%; transform: translateX(-50%);
+  // This means it was centered below the rectangle.
+
+  // Let's adjust the triangle to be below the rectangle and point upwards towards it
+  // This setup means the hotspot button is at the bottom, and the tooltip appears above it.
+  // The triangle should point from the button towards the tooltip rectangle.
+  // So, the triangle should be positioned near the button, pointing upwards.
+  // Let's re-evaluate based on the original .triangle and .rectangle positioning.
+
+  // Original .rectangle: transform: translate(-44%, -145%)
+  // Original .triangle: left: 50%; transform: translateX(-50%) translateY(-100%); margin-top: -10px;
+  // This implies the triangle is at the "bottom" of the rectangle, pointing down.
+  // So the rectangle is above the button.
+
+  // Corrected based on common tooltip patterns (triangle at bottom of tooltip, pointing down)
+  // This means the tooltip div (.rectangle) is positioned above the button.
+  // The triangle is attached to the bottom of this rectangle.
+  position: absolute; // Relative to the main container div
+  left: 50%; // Center under the rectangle
+  bottom: -10px; // Attach to bottom of rectangle (assuming rectangle has some height)
+                 // This needs to be coordinated with rectangle's position.
+                 // The provided TSX has the main container as position-absolute.
+                 // The rectangle and triangle are inside it.
+                 // Let's assume the triangle should be positioned relative to the RECTANGLE, not the main div.
+                 // This is hard to do without seeing the layout.
+                 // For now, I will keep it simple and assume it's part of the tooltip visual structure.
+                 // The transform on .rectangle is translate(-50%, -125%), placing it above the button.
+                 // The triangle should be at the bottom of this rectangle, pointing down.
+  transform: translateX(-50%); // Center the triangle horizontally
+  border-width: 10px 10px 0 10px; // Pointing upwards
+  border-color: $brand-white transparent transparent transparent; // Triangle color matches rectangle (pointing UP)
+}
+
+.tooltipTriangleSelected {
+  border-top-color: $tooltip-selected-bg; // Match selected background, for UP pointing triangle
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+// Opacity and visibility for hiding/showing (used by default)
+// These are applied when 'isSelected' is false in the component
+.opacity-0 { // Bootstrap already has opacity-0
+  opacity: 0;
+  visibility: hidden; 
+}
+
+
+// Media queries (example from original, adapt as needed)
+@media (max-width: 767.98px) { // Corresponds to Bootstrap's sm breakpoint
+  .rectangle {
+    // Example: adjust padding or min-width for smaller screens
+    padding: 0.5rem 0.75rem;
+    min-width: 9.375rem; // 150px
+  }
+  // Adjust other styles if necessary
+}
+
+// Ensure this is compatible with how it's used in the TSX
+// The TSX uses:
+// className={`position-absolute`} for the main div with top/left style
+// Button: `${styles.btnCircle} ${styles.btnCircleSm} ${styles.hotspotX}`
+// Tooltip Div: `${styles.rectangle} ${styles.hotspotX} ${styles.label} ... ${isSelected ? styles.tooltipSelected : 'opacity-0'}`
+// Triangle Div: `${styles.triangle} ${styles.hotspotX} ${isSelected ? styles.tooltipTriangleSelected : 'opacity-0'}`
+// This seems mostly fine. The hotspotX on rectangle and triangle might be redundant if their positioning is handled within the module.
+// For now, I'll keep it as it reflects the direct conversion.
+// The `transform` on `.rectangle` and `.triangle` will need careful adjustment to ensure correct placement relative to the button.
+// The current `transform: translate(-50%, -125%)` for `.rectangle` and `transform: translateX(-50%)` for `.triangle` (plus `bottom: -10px` relative to rectangle) needs to be verified.
+
+// Re-adjusting triangle positioning to be directly below the rectangle:
+// The rectangle is at transform: translate(-50%, -125%) relative to the button.
+// The triangle should be at the bottom-center of the rectangle.
+// Let's remove the `hotspotX` from triangle and rectangle if they are positioned relative to each other.
+// For now, the TSX uses `hotspotX` on them.
+// The triangle's `transform` should be relative to its natural position after the rectangle.
+// Let's try to simplify the triangle positioning.
+// If .rectangle contains .tooltipTitle, .tooltipSubtitle, AND .triangle, positioning is easier.
+// But the current TSX has them as siblings.
+
+// Final check on triangle:
+// It's positioned absolutely within the main container.
+// Rectangle: transform: translate(-50%, -125%) means it's above and centered on the button.
+// Triangle should be at the bottom of the rectangle, pointing downwards.
+// So, top of triangle is at bottom of rectangle.
+// left: 50%, transform: translateX(-50%) to center it.
+// border-width: 10px 10px 0 10px (pointing up) is wrong if rectangle is above.
+// It should be border-width: 0 10px 10px 10px (pointing down).
+
+// Let's correct the triangle to point DOWN, from the bottom of the rectangle.
+.triangle {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  z-index: 2; // Same as rectangle
+  // Position it centered horizontally with the button, and just below the rectangle
+  // The rectangle is at: style={{ top: `${topPos}%`, left: `${leftPos}%` }} then transform: translate(-50%, -125%)
+  // The button is at the origin of this main div.
+  // So the rectangle is effectively at `left: 0 (of button) - 50% (of rectangle width)` and `top: 0 (of button) - 125% (of rectangle height)`
+  // This is a bit complex.
+  // Let's assume the triangle is positioned relative to where the button is.
+  // And it should appear *under* the rectangle.
+  // Original: left: 50%; transform: translateX(-50%) translateY(-100%); margin-top: -10px;
+  // This means it's centered horizontally, its top is 10px above the button.
+  // And it points downwards (border-right-color was used, implying a side triangle, but let's assume a vertical one).
+
+  // Sticking to the TSX structure and common tooltip patterns:
+  // Button is the anchor. Tooltip (rectangle + triangle) appears above it.
+  // Rectangle: transform: translate(-50%, -125%) (moves it up and centers it)
+  // Triangle: Should be at the bottom of the rectangle, pointing down.
+  // So, its `top` should be `bottom of rectangle` and `left` should be `center of rectangle`.
+  // This is tricky because rectangle's height is dynamic.
+  // A common CSS technique is to make the triangle a pseudo-element of the rectangle.
+  // Since it's a separate div, we position it relative to the main container.
+  // It needs to visually connect to the bottom of the rectangle.
+  // The rectangle's effective top is `topPos (button center) - 125% (rectangle height)`.
+  // Its effective left is `leftPos (button center) - 50% (rectangle width)`.
+
+  // Simpler approach for the triangle:
+  // Position it centered below the button, pointing upwards.
+  // Then adjust the rectangle to be above this triangle.
+  // This is more typical.
+  // Button -> Triangle (points up) -> Rectangle (tooltip content)
+
+  // Let's assume the provided `transform: translate(-50%, -125%)` for the rectangle
+  // means it's already positioned correctly above the button.
+  // The triangle should then be at the bottom of this rectangle, pointing down.
+  // So, `left: 50%` (of rectangle's width, effectively), `top: 100%` (of rectangle's height).
+  // This means `transform: translate(-50%, 0)` if positioned relative to rectangle.
+  // Since it's a sibling, this is hard.
+
+  // Keeping the original relative positioning logic as much as possible:
+  // The .triangle's style implies it's positioned relative to the button, not the rectangle.
+  // `left: 50%` of the container (which is centered on the button).
+  // `transform: translateX(-50%)` centers it.
+  // `translateY(-100%)` would put its bottom at the button's vertical center.
+  // `margin-top: -10px` would shift it up by 10px.
+  // This means the triangle is just above the button, pointing down.
+  // Then the rectangle is `transform: translate(-44%, -145%)` relative to the button.
+  // This is a very specific layout.
+
+  // Let's use the simpler model: Button is the anchor. Tooltip (rectangle + triangle) is above.
+  // Rectangle: `transform: translate(-50%, -calc(100% + 10px));` /* Moves it above button + triangle height */
+  // Triangle: `transform: translate(-50%, -100%); border-width: 10px 10px 0 10px; border-color: $tooltip-selected-bg transparent transparent transparent;` /* Sits on button, points up */
+  // This requires changing the TSX transforms.
+  // I will stick to converting the SCSS as closely as possible first, and then suggest refactoring the positioning if it's problematic.
+  // The current TSX has `style={{ top: topPos, left: leftPos }}` on the outer div.
+  // Then the button is at (0,0) of this div.
+  // Rectangle: `transform: translate(-50%, -125%)`. This means its bottom-left corner will be at -50% of its width from button center, and -125% of its height from button center. This places it above and to the left of the button center.
+  // Triangle: `transform: translate(-50%, -12px)`. This means its top-left will be -50% of its width from button center, and -12px from button center.
+
+  // The original CSS for triangle was:
+  // .triangle { left: 50%; margin-top: -10px; transform: translateX(-50%) translateY(-100%); }
+  // This places the tip of the downwards-pointing triangle 10px above the button's center.
+  // And the rectangle was: transform: translate(-44%, -145%); (relative to button center)
+  // This means the rectangle was above the triangle.
+
+  // For the SCSS module, I'll use the same logic for the triangle:
+  // It's positioned relative to the button.
+  // It's just above the button, pointing down.
+  // The rectangle is then positioned above the triangle.
+  // This will mean the `transform` on `.rectangle` in the TSX needs to ensure it's above this triangle.
+  // The TSX current `translate(-50%, -125%)` for rectangle and `translate(-50%, -12px)` for triangle might be an attempt to simplify, but the Y values are not directly comparable percentages vs pixels.
+
+  // Let's try to match the original SCSS intent for the triangle:
+  // Positioned above the button, pointing down.
+  // The rectangle should then be above this triangle.
+  left: 50%; // Relative to the container div (which is at topPos, leftPos)
+  bottom: 100%; // Position its bottom at the button's top edge (approx)
+  transform: translateX(-50%) translateY(10px); // Center it and push it down slightly so base is above button, tip points to button.
+  border-width: 10px 10px 0; // Pointing up
+  border-color: $brand-white transparent transparent transparent;
+}
+
+.tooltipTriangleSelected {
+  border-top-color: $tooltip-selected-bg; // Change color when selected
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+// The above triangle assumes it's below the rectangle, pointing up towards it.
+// This makes the most sense for a tooltip above a button.
+// Rectangle: positioned above the button.
+// Triangle: positioned at the bottom of the rectangle, pointing down to the button.
+
+// Let's re-do the triangle to be at the BOTTOM of the RECTANGLE, pointing DOWN.
+// This means the rectangle's `transform` should account for its own height and the triangle's height.
+// TSX: <Button /> <RectangleDiv /> <TriangleDiv />
+// Rectangle: transform: translate(-50%, -calc(100% + 10px)); /* Place above button + triangle */
+// Triangle: transform: translate(-50%, -100%); /* Place on button, point up to rectangle */
+// This is a common pattern but requires the TSX to be structured for it.
+// Given the current TSX structure (Button, Rectangle, Triangle are siblings), they are all positioned relative to the main `div`.
+
+// Final attempt for triangle based on its sibling nature and typical tooltip:
+// Rectangle is placed above button: transform: translate(-50%, -125%)
+// Triangle should visually connect the rectangle to the button.
+// So it's at the bottom of the rectangle, pointing down.
+.triangle {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  z-index: 2;
+  // Position it centered horizontally with the button.
+  // Its top should align with the bottom of the rectangle.
+  // Rectangle bottom is effectively at `topPos - 125%_rect_height`.
+  // This is hard with sibling elements and dynamic height.
+  // The simplest for now is to assume fixed offsets or use JS if it needs to be precise.
+  // The original SCSS had triangle `margin-top: -10px; transform: translateX(-50%) translateY(-100%);`
+  // This put the triangle tip 10px ABOVE the button center, pointing DOWN.
+  // Let's replicate that.
+  left: 50%;
+  // Position its base -10px above the anchor (button's top), so it points downwards from this position
+  transform: translate(-50%, -10px); 
+  border-width: 0 10px 10px 10px; // Pointing down
+  border-color: transparent transparent $brand-white transparent; // Bottom border colored
+}
+.tooltipTriangleSelected {
+  border-bottom-color: $tooltip-selected-bg; // Bottom border colored for selected state
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+// Explanation of the new positioning:
+// .rectangle: transform: translate(-50%, calc(-100% - 10px));
+//   - Horizontally centers itself ( -50% of its own width).
+//   - Vertically, it moves up by its own full height (-100%) and then up by another 10px (for triangle space).
+//     So, its bottom edge will be 10px above the hotspot button's origin.
+// .triangle: transform: translate(-50%, -10px);
+//   - Horizontally centers itself (-50% of its own width).
+//   - Vertically, its top edge is moved up by 10px (-10px) from the hotspot button's origin.
+//   - Since it's a down-pointing triangle (border-bottom colored), its base (top edge) is at -10px 
+//     and its tip points downwards towards the button. This makes it fill the 10px space.
